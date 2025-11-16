@@ -1,13 +1,3 @@
-properties([
-    parameters([
-        string(
-            name: 'IMAGE_TAG',
-            defaultValue: 'latest',
-            description: 'Docker image tag from CI pipeline'
-        )
-    ])
-])
-
 pipeline {
     agent any
     environment {
@@ -28,7 +18,7 @@ pipeline {
             steps {
                 sh """
                     cat deployment.yaml
-                    sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml
+                    sed -i 's|azizelanbouri/reddit-clone-pipeline:[^[:space:]]*|azizelanbouri/reddit-clone-pipeline:${params.IMAGE_TAG}|g' deployment.yaml
                     cat deployment.yaml
                 """
             }
@@ -39,7 +29,7 @@ pipeline {
                     git config --global user.name "azizelanbouri"
                     git config --global user.email "elanbouriaziz@gmail.com"
                     git add deployment.yaml
-                    git commit -m "Updated Deployment Manifest"
+                    git commit -m "Updated Deployment Manifest with tag ${params.IMAGE_TAG}"
                 """
                 withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
                     sh "git push https://github.com/azizelanbouri/a-reddit-clone-gitops main"
