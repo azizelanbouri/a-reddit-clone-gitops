@@ -1,3 +1,13 @@
+properties([
+    parameters([
+        string(
+            name: 'IMAGE_TAG',
+            defaultValue: 'latest',
+            description: 'Docker image tag from CI pipeline'
+        )
+    ])
+])
+
 pipeline {
     agent any
     environment {
